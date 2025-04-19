@@ -1,0 +1,12 @@
+
+[2025-04-19 13:25:45.936656] Mood: tired, Energy: 5, Time: 30 mins
+→ Take a 30-minute mindful walk.
+→ Do a short 10-min breathing session to feel more tired.
+→ Your energy is at 5/10 — maybe some light stretching or journaling?
+→ Take a power nap or do a low-effort activity like coloring.
+
+[2025-04-19 13:42:30.206610] Mood: tired, Energy: 5, Time: 30 mins
+→ Take a 30-minute mindful walk.
+→ Do a short 10-min breathing session to feel more tired.
+→ Your energy is at 5/10 — maybe some light stretching or journaling?
+→ Take a power nap or do a low-effort activity like coloring.
