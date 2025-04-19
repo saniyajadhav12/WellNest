@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from utils.suggestions import get_suggestions
+from database import insert_log_to_db
 
 app = FastAPI()
 
@@ -39,5 +40,6 @@ def log_request(mood: str, energy: int, time: int, suggestions: list[str]):
 def suggest_activity(req: SuggestRequest):
     suggestions = get_suggestions(req.mood, req.energy, req.time)
     log_request(req.mood, req.energy, req.time, suggestions)
+    insert_log_to_db(req.mood, req.energy, req.time, suggestions)
     return {"suggestions": suggestions}
 
