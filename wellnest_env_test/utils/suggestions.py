@@ -1,13 +1,38 @@
-# server/utils/suggestions.py
+import random
 
 def get_suggestions(mood: str, energy: int, time: int) -> list[str]:
-    base = [
+    mood = mood.lower()
+    suggestions = [
         f"Take a {time}-minute mindful walk.",
-        f"Do a short {min(time, 10)}-min breathing session to feel more {mood.lower()}.",
-        f"Your energy is at {energy}/10 — maybe some light stretching or journaling?",
+        f"Do a {min(time, 10)}-minute breathing exercise to stay grounded.",
+        f"Your energy is at {energy}/10 — consider journaling or stretching."
     ]
-    if mood.lower() == "tired":
-        base.append("Take a power nap or do a low-effort activity like coloring.")
-    if mood.lower() == "anxious":
-        base.append("Try a grounding exercise like the 5-4-3-2-1 technique.")
-    return base
+
+    mood_specific = {
+        "happy": [
+            "Celebrate with music or a quick dance!",
+            "Spread the positivity — message a friend or write a compliment.",
+            "Capture your good mood with a short gratitude note."
+        ],
+        "sad": [
+            "Watch a comforting video or listen to soothing music.",
+            "Try a mood-lifting activity like sketching or painting.",
+            "Wrap yourself in a cozy blanket and enjoy a warm drink."
+        ],
+        "anxious": [
+            "Try a grounding exercise like the 5-4-3-2-1 technique.",
+            "Light a scented candle or use calming essential oils.",
+            "Declutter a small space — it helps clear the mind too."
+        ],
+        "tired": [
+            "Take a power nap if possible.",
+            "Do a low-effort activity like coloring or watching nature videos.",
+            "Drink water and do gentle neck rolls or stretching."
+        ]
+    }
+
+    # Add 2 random mood-specific suggestions if available
+    if mood in mood_specific:
+        suggestions += random.sample(mood_specific[mood], k=2)
+
+    return suggestions
