@@ -58,3 +58,15 @@
 → Take a 10-minute mindful walk.
 → Do a short 10-min breathing session to feel more happy.
 → Your energy is at 3/10 — maybe some light stretching or journaling?
+
+[2025-04-19 22:15:28.586902] Mood: tired, Energy: 5, Time: 30 mins
+→ Take a 30-minute mindful walk.
+→ Do a short 10-min breathing session to feel more tired.
+→ Your energy is at 5/10 — maybe some light stretching or journaling?
+→ Take a power nap or do a low-effort activity like coloring.
+
+[2025-04-19 23:22:25.103389] Mood: tired, Energy: 3, Time: 10 mins
+→ Take a 10-minute mindful walk.
+→ Do a short 10-min breathing session to feel more tired.
+→ Your energy is at 3/10 — maybe some light stretching or journaling?
+→ Take a power nap or do a low-effort activity like coloring.

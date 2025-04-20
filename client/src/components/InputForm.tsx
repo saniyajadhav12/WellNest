@@ -3,9 +3,10 @@ import axios from 'axios';
 
 interface Props {
   onSuggestionsReceived: (suggestions: string[]) => void;
+  theme: "light" | "dark";
 }
 
-const InputForm: React.FC<Props> = ({ onSuggestionsReceived }) => {
+const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
   const [mood, setMood] = useState('');
   const [energy, setEnergy] = useState(5);
   const [time, setTime] = useState(30);
@@ -28,43 +29,98 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived }) => {
     }
   };
 
+  const cardStyle = {
+    backgroundColor: theme === "dark" ? "#1e1e1e" : "#f9f9f9",
+    color: theme === "dark" ? "#f1f1f1" : "#111",
+    border: `1px solid ${theme === "dark" ? "#333" : "#ddd"}`,
+    borderRadius: "12px",
+    padding: "1.5rem",
+    boxShadow: theme === "dark" ? "0 2px 8px rgba(255,255,255,0.05)" : "0 2px 8px rgba(0,0,0,0.05)",
+    maxWidth: "500px",
+    margin: "0 auto",
+  };
+
+  const inputStyle = {
+    backgroundColor: theme === "dark" ? "#2a2a2a" : "#fff",
+    color: theme === "dark" ? "#f1f1f1" : "#111",
+    border: `1px solid ${theme === "dark" ? "#444" : "#ccc"}`,
+    padding: "0.5rem",
+    borderRadius: "8px",
+    width: "100%",
+  };
+
+  const labelStyle = {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: "0.3rem",
+  };
+
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <label>
-        Mood:
-        <select value={mood} onChange={(e) => setMood(e.target.value)} required>
-          <option value="">Select mood</option>
-          <option value="happy">Happy</option>
-          <option value="tired">Tired</option>
-          <option value="anxious">Anxious</option>
-          <option value="sad">Sad</option>
-        </select>
-      </label>
+    <form onSubmit={handleSubmit} style={cardStyle}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <label style={labelStyle}>
+          Mood:
+          <select
+            value={mood}
+            onChange={(e) => setMood(e.target.value)}
+            required
+            style={inputStyle}
+          >
+            <option value="">Select mood</option>
+            <option value="happy">Happy</option>
+            <option value="tired">Tired</option>
+            <option value="anxious">Anxious</option>
+            <option value="sad">Sad</option>
+          </select>
+        </label>
 
-      <label>
-        Energy Level: {energy}
-        <input
-          type="range"
-          min={1}
-          max={10}
-          value={energy}
-          onChange={(e) => setEnergy(Number(e.target.value))}
-        />
-      </label>
+        <label style={labelStyle}>
+          Energy Level: {energy}
+          <input
+            type="range"
+            min={1}
+            max={10}
+            value={energy}
+            onChange={(e) => setEnergy(Number(e.target.value))}
+            style={{ 
+              width: "100%", 
+              boxSizing: "border-box", 
+              marginTop: "0.3rem",
+              paddingRight: "0px",
+            }}
+          />
+        </label>
 
-      <label>
-        Available Time (minutes):
-        <input
-          type="number"
-          min={5}
-          max={120}
-          value={time}
-          onChange={(e) => setTime(Number(e.target.value))}
-          required
-        />
-      </label>
+        <label style={labelStyle}>
+          Available Time (minutes):
+          <input
+            type="number"
+            min={5}
+            max={120}
+            value={time}
+            onChange={(e) => setTime(Number(e.target.value))}
+            required
+            style={inputStyle}
+          />
+        </label>
 
-      <button type="submit">Get Suggestions</button>
+        <button
+          type="submit"
+          className="btn"
+          // style={{
+          //   padding: "0.75rem",
+          //   borderRadius: "8px",
+          //   border: "none",
+          //   backgroundColor: theme === "dark" ? "#444" : "#333",
+          //   color: "#fff",
+          //   fontWeight: "bold",
+          //   cursor: "pointer",
+          //   transition: "background 0.3s ease",
+          // }}
+        >
+          Get Suggestions
+        </button>
+      </div>
     </form>
   );
 };
