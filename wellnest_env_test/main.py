@@ -184,3 +184,44 @@ def get_mood_daily_summary():
         return JSONResponse(content={"results": result})
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=500)
+    
+from schemas import UserCreate
+from auth import hash_password
+import psycopg2
+from fastapi import HTTPException
+
+@app.post("/register")
+def register_user(user: UserCreate):
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor()
+
+        # Check if user already exists
+        cur.execute("SELECT * FROM users WHERE email = %s", (user.email,))
+        if cur.fetchone():
+            raise HTTPException(status_code=400, detail="User already exists")
+
+        # Hash password
+        hashed_pwd = hash_password(user.password)
+
+        # Insert new user
+        cur.execute(
+            "INSERT INTO users (username, email, password_hash) VALUES (%s, %s, %s) RETURNING id, email, created_at",
+            (user.username, user.email, hashed_pwd)
+        )
+
+        new_user = cur.fetchone()
+
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return {
+            "id": new_user[0],
+            "username": new_user[1],
+            "email": new_user[2],
+            "created_at": new_user[3].isoformat()
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
