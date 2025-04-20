@@ -20,7 +20,7 @@ const PastSuggestions: React.FC = () => {
       const params: any = {};
       if (mood) params.mood = mood;
       if (date === "today") {
-        const localDate = new Date().toLocaleDateString("en-CA"); // e.g., 2025-04-20
+        const localDate = new Date().toLocaleDateString("en-CA");
         params.date = localDate;
       } else if (date) {
         params.date = date;
@@ -35,59 +35,102 @@ const PastSuggestions: React.FC = () => {
       console.error("Error fetching suggestions:", err);
     }
   };
-  
 
   useEffect(() => {
     fetchSuggestions();
   }, [mood, date]);
 
   return (
-    <div style={{ marginTop: "2rem" }}>
-      <h2>🗂️ Past Suggestions</h2>
+    <div
+      style={{
+        marginTop: "3rem",
+        padding: "1.5rem",
+        backgroundColor: "#fefeff",
+        borderRadius: "12px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+        border: "1px solid #eaeaea",
+      }}
+    >
+      <h2 style={{ marginBottom: "1rem", color: "#444" }}>🗂️ Past Suggestions</h2>
 
-      <div style={{ marginBottom: "1rem" }}>
-        <label>Filter by Mood: </label>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "1rem",
+          marginBottom: "1.5rem",
+        }}
+      >
         <input
           type="text"
-          placeholder="e.g., tired"
+          placeholder="Filter by mood"
           value={mood}
           onChange={(e) => setMood(e.target.value)}
+          style={{
+            padding: "0.5rem",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            flex: "1 1 150px",
+          }}
         />
 
-        <label style={{ marginLeft: "1rem" }}>Filter by Date: </label>
         <input
           type="date"
           value={date === "today" ? "" : date}
           onChange={(e) => setDate(e.target.value)}
+          style={{
+            padding: "0.5rem",
+            borderRadius: "8px",
+            border: "1px solid #ccc",
+            flex: "1 1 150px",
+          }}
         />
 
-        <button style={{ marginLeft: "1rem" }} onClick={() => setDate("today")}>
-          Today
-        </button>
-        <button style={{ marginLeft: "0.5rem" }} onClick={() => { setMood(""); setDate(""); }}>
-          Clear
-        </button>
+        <button onClick={() => setDate("today")}>Today</button>
+        <button onClick={() => { setMood(""); setDate(""); }}>Clear</button>
       </div>
 
-      {data.length === 0 ? (
+      {date && !data.length ? (
         <p style={{ fontStyle: "italic", color: "#888" }}>
-            {date === "today"
+          {date === "today"
             ? "No suggestions found for today. Try adjusting the filters!"
-            : "No suggestions found for the selected filters."}
+            : `No suggestions found for ${date}.`}
         </p>
-      
+      ) : !data.length ? (
+        <p style={{ fontStyle: "italic", color: "#888" }}>
+          No suggestions found for the selected filters.
+        </p>
       ) : (
-        <ul>
+        <div style={{ display: "grid", gap: "1rem" }}>
           {data.map((item) => (
-            <li key={item.id} style={{ marginBottom: "1rem", borderBottom: "1px solid #ccc", paddingBottom: "0.5rem" }}>
-              <strong>{item.mood}</strong> • Energy: {item.energy} • Time: {item.time} min  
-              <br />
-              <em>{new Date(item.created_at).toLocaleString()}</em>
-              <br />
-              <span>{item.suggestions}</span>
-            </li>
+            <div
+              key={item.id}
+              style={{
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                padding: "1rem",
+                backgroundColor: "#fafafa",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
+              }}
+            >
+              <div
+                style={{ fontWeight: "bold", marginBottom: "0.25rem", color: "#333" }}
+              >
+                {item.mood} • Energy: {item.energy} • Time: {item.time} min
+              </div>
+              <div
+                style={{
+                  fontSize: "0.85rem",
+                  color: "#777",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                {new Date(item.created_at).toLocaleString()}
+              </div>
+              <div>{item.suggestions}</div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
