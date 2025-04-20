@@ -10,6 +10,7 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
   const [mood, setMood] = useState('');
   const [energy, setEnergy] = useState(5);
   const [time, setTime] = useState(30);
+  const [journal, setJournal] = useState('');
 
   type SuggestionResponse = {
     suggestions: string[];
@@ -22,6 +23,7 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
         mood,
         energy,
         time,
+        journal,
       });
       onSuggestionsReceived(res.data.suggestions);
     } catch (error) {
@@ -101,6 +103,17 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
             onChange={(e) => setTime(Number(e.target.value))}
             required
             style={inputStyle}
+          />
+        </label>
+
+        <label style={labelStyle}>
+          Journal Entry (optional):
+          <textarea
+            value={journal}
+            onChange={(e) => setJournal(e.target.value)}
+            rows={4}
+            placeholder="How are you feeling today?"
+            style={{ ...inputStyle, resize: 'vertical' }}
           />
         </label>
 

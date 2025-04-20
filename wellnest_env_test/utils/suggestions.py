@@ -36,3 +36,26 @@ def get_suggestions(mood: str, energy: int, time: int) -> list[str]:
         suggestions += random.sample(mood_specific[mood], k=2)
 
     return suggestions
+
+def get_suggestions_from_journal(journal: str, mood: str, energy: int, time: int) -> list[str]:
+    journal_lower = journal.lower()
+    suggestions = []
+
+    if "tired" in journal_lower or "exhausted" in journal_lower:
+        suggestions.append("You seem tired — try a 10-minute nap or calming music.")
+    if "anxious" in journal_lower or "stress" in journal_lower:
+        suggestions.append("Feeling anxious? A 5-minute breathing exercise can help.")
+    if "sad" in journal_lower or "down" in journal_lower:
+        suggestions.append("Consider journaling your thoughts or watching something light-hearted.")
+    if "happy" in journal_lower or "excited" in journal_lower:
+        suggestions.append("Channel that joy! Dance, walk, or share it with someone.")
+
+    # fallback
+    if not suggestions:
+        suggestions = get_suggestions(mood, energy, time)
+
+    suggestions.append(f"Use {time} minutes to reflect and recharge.")
+    suggestions.append(f"Your energy level is {energy}/10 — listen to your body.")
+
+    return suggestions
+

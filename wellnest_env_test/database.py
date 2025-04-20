@@ -13,7 +13,7 @@ DB_CONFIG = {
     "port": "5432",
 }
 
-def insert_log_to_db(mood: str, energy: int, time: int, suggestions: List[str]):
+def insert_log_to_db(mood: str, energy: int, time: int, suggestions: List[str], journal: str = ""):
     print("📦 Attempting to insert into PostgreSQL...")  # DEBUG LINE
     try:
         conn = psycopg2.connect(**DB_CONFIG)
@@ -24,7 +24,7 @@ def insert_log_to_db(mood: str, energy: int, time: int, suggestions: List[str]):
             VALUES (%s, %s, %s, %s);
         """)
 
-        cur.execute(query, (mood, energy, time, ", ".join(suggestions)))
+        cur.execute(query, (mood, energy, time, ", ".join(suggestions), journal))
         conn.commit()
 
         cur.close()

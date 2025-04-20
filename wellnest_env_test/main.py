@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from utils.suggestions import get_suggestions
+from utils.suggestions import get_suggestions, get_suggestions_from_journal
 from database import insert_log_to_db, DB_CONFIG
 
 app = FastAPI()
@@ -19,26 +19,32 @@ class SuggestRequest(BaseModel):
     mood: str
     energy: int
     time: int
-
+    journal: str = ""
 
 import os
 print("📂 Current working directory:", os.getcwd())
 
-def log_request(mood: str, energy: int, time: int, suggestions: list[str]):
+def log_request(mood: str, energy: int, time: int, suggestions: list[str], journal: str = ""):
     print("📍 Logging to activity_log.txt...")  # debug print
 
     log_path = os.path.join(os.path.dirname(__file__), "activity_log.txt")
     with open(log_path, "a") as log:
         log.write(f"\n[{datetime.now()}] Mood: {mood}, Energy: {energy}, Time: {time} mins\n")
+        if journal.strip():
+            log.write(f"📝 Journal: {journal.strip()}\n")
         for s in suggestions:
             log.write(f"→ {s}\n")
 
 
 @app.post("/suggest")
 def suggest_activity(req: SuggestRequest):
-    suggestions = get_suggestions(req.mood, req.energy, req.time)
-    log_request(req.mood, req.energy, req.time, suggestions)
-    insert_log_to_db(req.mood, req.energy, req.time, suggestions)
+    if req.journal.strip():
+        suggestions = get_suggestions_from_journal(req.journal, req.mood, req.energy, req.time)
+    else:
+        suggestions = get_suggestions(req.mood, req.energy, req.time)
+
+    log_request(req.mood, req.energy, req.time, suggestions, req.journal)
+    insert_log_to_db(req.mood, req.energy, req.time, suggestions, req.journal)
     return {"suggestions": suggestions}
 
 from fastapi import Query

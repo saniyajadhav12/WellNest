@@ -6,3 +6,4 @@ class SuggestRequest(BaseModel):
     mood: str
     energy: int
     time: int
+    journal: str

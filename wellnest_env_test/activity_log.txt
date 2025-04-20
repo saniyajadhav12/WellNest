@@ -112,3 +112,57 @@
 → Your energy is at 5/10 — consider journaling or stretching.
 → Spread the positivity — message a friend or write a compliment.
 → Capture your good mood with a short gratitude note.
+
+[2025-04-20 01:21:33.322646] Mood: happy, Energy: 4, Time: 10 mins
+→ Take a 10-minute mindful walk.
+→ Do a 10-minute breathing exercise to stay grounded.
+→ Your energy is at 4/10 — consider journaling or stretching.
+→ Spread the positivity — message a friend or write a compliment.
+→ Celebrate with music or a quick dance!
+
+[2025-04-20 01:23:46.251405] Mood: happy, Energy: 4, Time: 10 mins
+→ Take a 10-minute mindful walk.
+→ Do a 10-minute breathing exercise to stay grounded.
+→ Your energy is at 4/10 — consider journaling or stretching.
+→ Celebrate with music or a quick dance!
+→ Capture your good mood with a short gratitude note.
+
+[2025-04-20 01:25:28.235488] Mood: sad, Energy: 4, Time: 20 mins
+→ Take a 20-minute mindful walk.
+→ Do a 10-minute breathing exercise to stay grounded.
+→ Your energy is at 4/10 — consider journaling or stretching.
+→ Wrap yourself in a cozy blanket and enjoy a warm drink.
+→ Try a mood-lifting activity like sketching or painting.
+
+[2025-04-20 01:27:02.449919] Mood: sad, Energy: 4, Time: 20 mins
+→ Take a 20-minute mindful walk.
+→ Do a 10-minute breathing exercise to stay grounded.
+→ Your energy is at 4/10 — consider journaling or stretching.
+→ Watch a comforting video or listen to soothing music.
+→ Try a mood-lifting activity like sketching or painting.
+
+[2025-04-20 01:31:55.614368] Mood: sad, Energy: 4, Time: 20 mins
+→ Consider journaling your thoughts or watching something light-hearted.
+→ Use 20 minutes to reflect and recharge.
+→ Your energy level is 4/10 — listen to your body.
+
+[2025-04-20 01:33:58.419896] Mood: sad, Energy: 4, Time: 20 mins
+→ Consider journaling your thoughts or watching something light-hearted.
+→ Use 20 minutes to reflect and recharge.
+→ Your energy level is 4/10 — listen to your body.
+
+[2025-04-20 01:34:12.353310] Mood: anxious, Energy: 1, Time: 20 mins
+→ Consider journaling your thoughts or watching something light-hearted.
+→ Use 20 minutes to reflect and recharge.
+→ Your energy level is 1/10 — listen to your body.
+
+[2025-04-20 01:35:29.061334] Mood: anxious, Energy: 1, Time: 20 mins
+→ Consider journaling your thoughts or watching something light-hearted.
+→ Use 20 minutes to reflect and recharge.
+→ Your energy level is 1/10 — listen to your body.
+
+[2025-04-20 01:37:15.022749] Mood: tired, Energy: 1, Time: 20 mins
+📝 Journal: I am feeling very tired
+→ You seem tired — try a 10-minute nap or calming music.
+→ Use 20 minutes to reflect and recharge.
+→ Your energy level is 1/10 — listen to your body.
