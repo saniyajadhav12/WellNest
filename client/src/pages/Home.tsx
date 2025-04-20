@@ -9,6 +9,10 @@ import { useTheme } from "../context/ThemeContext";
 const Home: React.FC = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const { theme, toggleTheme } = useTheme();
+  const [selectedView, setSelectedView] = useState("summary");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [chartType, setChartType] = useState<"pie" | "bar">("pie");
+  const [showChart, setShowChart] = useState(false);
 
   return (
     <div
@@ -45,9 +49,74 @@ const Home: React.FC = () => {
       <Suggestions suggestions={suggestions} theme={theme} />
       <PastSuggestions theme={theme} />
 
-      {/* Chart Area */}
-      <MoodBreakdownChart />
-      <MoodDailyChart />
+      {/* Chart Settings */}
+      <div
+        style={{
+          marginTop: "3rem",
+          backgroundColor: theme === "dark" ? "#1e1e1e" : "#fefeff",
+          padding: "1.5rem",
+          borderRadius: "12px",
+          maxWidth: "600px",
+          marginInline: "auto",
+          border: `1px solid ${theme === "dark" ? "#333" : "#ddd"}`,
+        }}
+      >
+        <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>📊 Choose a Chart View</h2>
+
+        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <label>
+            <input
+              type="radio"
+              value="summary"
+              checked={selectedView === "summary"}
+              onChange={() => setSelectedView("summary")}
+            />
+            &nbsp;Summary
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              value="pie"
+              checked={selectedView === "pie"}
+              onChange={() => setSelectedView("pie")}
+            />
+            &nbsp;Pie Chart
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              value="bar"
+              checked={selectedView === "bar"}
+              onChange={() => setSelectedView("bar")}
+            />
+            &nbsp;Bar Chart
+          </label>
+        </div>
+
+        {selectedView !== "summary" && (
+          <div style={{ marginTop: "1rem", textAlign: "center" }}>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              style={{ padding: "0.5rem", borderRadius: "8px", border: "1px solid #ccc" }}
+            />
+            <div style={{ marginTop: "1rem" }}>
+              <button className="btn" onClick={() => setShowChart(true)}>
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Chart Display */}
+      {selectedView === "summary" && <MoodDailyChart />}
+      {selectedView !== "summary" && showChart && (
+        <MoodBreakdownChart chartType={selectedView as "pie" | "bar"} date={selectedDate} />
+      )}
     </div>
   );
 };
