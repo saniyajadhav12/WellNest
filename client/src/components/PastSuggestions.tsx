@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { saveAs } from "file-saver";
 
 type Suggestion = {
   id: number;
@@ -63,15 +64,36 @@ const PastSuggestions: React.FC<{ theme: "light" | "dark" }> = ({ theme }) => {
     }
   }, [page]);
 
+  const downloadCSV = () => {
+    if (!data.length) {
+      toast.info("No data to export.");
+      return;
+    }
+
+    const header = ["Mood", "Energy", "Time", "Suggestions", "Created At"];
+    const rows = data.map((item) => [
+      item.mood,
+      item.energy,
+      item.time,
+      `"${item.suggestions.replace(/"/g, '""')}"`,
+      new Date(item.created_at).toLocaleString(),
+    ]);
+    const csvContent = [header, ...rows].map((r) => r.join(",")).join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, "wellnest_suggestions.csv");
+  };
+
   const cardStyle = {
     border: `1px solid ${theme === "dark" ? "#444" : "#ddd"}`,
     borderRadius: "10px",
     padding: "1rem",
     backgroundColor: theme === "dark" ? "#2a2a2a" : "#fafafa",
     color: theme === "dark" ? "#f1f1f1" : "#111",
-    boxShadow: theme === "dark"
-      ? "0 1px 4px rgba(255,255,255,0.05)"
-      : "0 1px 4px rgba(0,0,0,0.03)",
+    boxShadow:
+      theme === "dark"
+        ? "0 1px 4px rgba(255,255,255,0.05)"
+        : "0 1px 4px rgba(0,0,0,0.03)",
   };
 
   const inputStyle = {
@@ -100,9 +122,10 @@ const PastSuggestions: React.FC<{ theme: "light" | "dark" }> = ({ theme }) => {
         padding: "1.5rem",
         backgroundColor: theme === "dark" ? "#1e1e1e" : "#fefeff",
         borderRadius: "12px",
-        boxShadow: theme === "dark"
-          ? "0 2px 8px rgba(255,255,255,0.03)"
-          : "0 2px 8px rgba(0,0,0,0.05)",
+        boxShadow:
+          theme === "dark"
+            ? "0 2px 8px rgba(255,255,255,0.03)"
+            : "0 2px 8px rgba(0,0,0,0.05)",
         border: `1px solid ${theme === "dark" ? "#333" : "#eaeaea"}`,
         color: theme === "dark" ? "#f1f1f1" : "#111",
         maxWidth: "420px",
@@ -137,8 +160,8 @@ const PastSuggestions: React.FC<{ theme: "light" | "dark" }> = ({ theme }) => {
           style={inputStyle}
         />
 
-        <button 
-          onClick={handleClear}  
+        <button
+          onClick={handleClear}
           // style={buttonStyle}
           className="btn"
         >
@@ -157,7 +180,12 @@ const PastSuggestions: React.FC<{ theme: "light" | "dark" }> = ({ theme }) => {
       </div>
 
       {loading && (
-        <p style={{ fontStyle: "italic", color: theme === "dark" ? "#ccc" : "#888" }}>
+        <p
+          style={{
+            fontStyle: "italic",
+            color: theme === "dark" ? "#ccc" : "#888",
+          }}
+        >
           Loading suggestions...
         </p>
       )}
@@ -183,42 +211,58 @@ const PastSuggestions: React.FC<{ theme: "light" | "dark" }> = ({ theme }) => {
       </div>
 
       {data.length > 0 && (
-        <div
-          style={{
-            marginTop: "1.5rem",
-            display: "flex",
-            justifyContent: "center",
-            gap: "1rem",
-          }}
-        >
-          <button
-            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            className="btn"
-            disabled={page === 1}
-            // style={{
-            //   ...buttonStyle,
-            //   opacity: page === 1 ? 0.5 : 1,
-            //   cursor: page === 1 ? "not-allowed" : "pointer",
-            // }}
+        <>
+          <div
+            style={{
+              marginTop: "1.5rem",
+              display: "flex",
+              justifyContent: "center",
+              gap: "1rem",
+            }}
           >
-            ⬅️ Previous
-          </button>
+            <button
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              className="btn"
+              disabled={page === 1}
+              // style={{
+              //   ...buttonStyle,
+              //   opacity: page === 1 ? 0.5 : 1,
+              //   cursor: page === 1 ? "not-allowed" : "pointer",
+              // }}
+            >
+              ⬅️ Previous
+            </button>
 
-          <span style={{ fontWeight: "bold", fontSize: "1rem", alignContent: "center", justifyContent: "center" }}>Page {page}</span>
+            <span
+              style={{
+                fontWeight: "bold",
+                fontSize: "1rem",
+                alignContent: "center",
+                justifyContent: "center",
+              }}
+            >
+              Page {page}
+            </span>
 
-          <button
-            onClick={() => setPage((prev) => prev + 1)}
-            disabled={data.length < limit}
-            className="btn"
-            // style={{
-            //   ...buttonStyle,
-            //   opacity: data.length < limit ? 0.5 : 1,
-            //   cursor: data.length < limit ? "not-allowed" : "pointer",
-            // }}
-          >
-            Next ➡️
-          </button>
-        </div>
+            <button
+              onClick={() => setPage((prev) => prev + 1)}
+              disabled={data.length < limit}
+              className="btn"
+              // style={{
+              //   ...buttonStyle,
+              //   opacity: data.length < limit ? 0.5 : 1,
+              //   cursor: data.length < limit ? "not-allowed" : "pointer",
+              // }}
+            >
+              Next ➡️
+            </button>
+          </div>
+          <div style={{ textAlign: "center", marginTop: "1rem" }}>
+            <button onClick={downloadCSV} className="btn">
+              📥 Download CSV
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
