@@ -49,9 +49,10 @@ from datetime import datetime
 
 @app.get("/suggestions")
 def get_suggestions_from_db(
-    limit: int = Query(None),
     mood: str = Query(None),
-    date: str = Query(None)
+    date: str = Query(None),
+    limit: int = Query(5),     # default 5 suggestions per page
+    offset: int = Query(0)     # skip how many records
 ):
     try:
         conn = psycopg2.connect(**DB_CONFIG)
@@ -72,9 +73,11 @@ def get_suggestions_from_db(
             base_query += " WHERE " + " AND ".join(conditions)
 
         base_query += " ORDER BY created_at DESC"
+        base_query += " LIMIT %s OFFSET %s"
+        params.extend([limit, offset])
 
-        if limit:
-            base_query += f" LIMIT {limit}"
+        # if limit:
+        #     base_query += f" LIMIT {limit}"
 
         cur.execute(base_query, params)
         results = cur.fetchall()

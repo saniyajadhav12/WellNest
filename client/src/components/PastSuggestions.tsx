@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -16,29 +16,37 @@ const PastSuggestions: React.FC = () => {
   const [mood, setMood] = useState("");
   const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const limit = 5; // Number of entries per page
+  const offset = (page - 1) * limit;
 
   const fetchSuggestions = async () => {
     if (!mood && !date) return;
-  
+
     setLoading(true); // show loading text or spinner
-  
+
     try {
       const params: any = {};
       if (mood) params.mood = mood;
       if (date) params.date = date;
-  
+
       const res = await axios.get<{ results: Suggestion[] }>(
         "http://localhost:8000/suggestions",
-        { params }
+        {
+          params: {
+            ...(mood && { mood }),
+            ...(date && { date }),
+            limit,
+            offset,
+          },
+        }
       );
-  
+
       setData(res.data.results || []);
-  
-      if (res.data.results?.length > 0) {
-        toast.success("Suggestions loaded!");
-      } else {
+
+      if (res.data.results?.length === 0) {
         toast.info("No suggestions found for the selected filters.");
-      }
+      }      
     } catch (err) {
       console.error("Error fetching suggestions:", err);
       toast.error("Something went wrong while fetching suggestions.");
@@ -46,16 +54,23 @@ const PastSuggestions: React.FC = () => {
       setLoading(false); // hide loading text or spinner
     }
   };
-  
 
   const handleClear = () => {
     setMood("");
     setDate("");
     setData([]);
+    setPage(1);
   };
+
+  useEffect(() => {
+    if (mood || date) {
+      fetchSuggestions();
+    }
+  }, [page]);
 
   return (
     <div
+      className="fade-in"
       style={{
         marginTop: "3rem",
         padding: "1.5rem",
@@ -102,7 +117,14 @@ const PastSuggestions: React.FC = () => {
           }}
         />
         <button onClick={handleClear}>Clear</button>
-        <button onClick={fetchSuggestions}>Search</button>
+        <button
+          onClick={() => {
+            setPage(1); // reset to first page on new search
+            fetchSuggestions();
+          }}
+        >
+          Search
+        </button>
       </div>
 
       {loading && (
@@ -121,41 +143,66 @@ const PastSuggestions: React.FC = () => {
           No suggestions found for the selected filters.
         </p>
       ) : ( */}
-        <div style={{ display: "grid", gap: "1rem" }}>
-          {data.map((item) => (
+      <div style={{ display: "grid", gap: "1rem" }}>
+        {data.map((item) => (
+          <div
+            key={item.id}
+            className="fade-in"
+            style={{
+              border: "1px solid #ddd",
+              borderRadius: "10px",
+              padding: "1rem",
+              backgroundColor: "#fafafa",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
+            }}
+          >
             <div
-              key={item.id}
               style={{
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                padding: "1rem",
-                backgroundColor: "#fafafa",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
+                fontWeight: "bold",
+                marginBottom: "0.25rem",
+                color: "#333",
               }}
             >
-              <div
-                style={{
-                  fontWeight: "bold",
-                  marginBottom: "0.25rem",
-                  color: "#333",
-                }}
-              >
-                {item.mood} • Energy: {item.energy} • Time: {item.time} min
-              </div>
-              <div
-                style={{
-                  fontSize: "0.85rem",
-                  color: "#777",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {new Date(item.created_at).toLocaleString()}
-              </div>
-              <div>{item.suggestions}</div>
+              {item.mood} • Energy: {item.energy} • Time: {item.time} min
             </div>
-          ))}
-        </div>
+            <div
+              style={{
+                fontSize: "0.85rem",
+                color: "#777",
+                marginBottom: "0.5rem",
+              }}
+            >
+              {new Date(item.created_at).toLocaleString()}
+            </div>
+            <div>{item.suggestions}</div>
+          </div>
+        ))}
+      </div>
       {/* )} */}
+      {data.length > 0 && (
+        <div
+          style={{
+            marginTop: "1.5rem",
+            display: "flex",
+            justifyContent: "center",
+            gap: "1rem",
+          }}
+        >
+          <button
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+          >
+            ⬅️ Previous
+          </button>
+          <span>Page {page}</span>
+          <button
+            onClick={() => setPage((prev) => prev + 1)}
+            disabled={data.length < limit}
+          >
+            Next ➡️
+          </button>
+        </div>
+      )}
     </div>
   );
 };
