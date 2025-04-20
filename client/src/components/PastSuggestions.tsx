@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 type Suggestion = {
   id: number;
@@ -14,9 +15,12 @@ const PastSuggestions: React.FC = () => {
   const [data, setData] = useState<Suggestion[]>([]);
   const [mood, setMood] = useState("");
   const [date, setDate] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchSuggestions = async () => {
     if (!mood && !date) return;
+  
+    setLoading(true); // show loading text or spinner
   
     try {
       const params: any = {};
@@ -27,12 +31,21 @@ const PastSuggestions: React.FC = () => {
         "http://localhost:8000/suggestions",
         { params }
       );
+  
       setData(res.data.results || []);
+  
+      if (res.data.results?.length > 0) {
+        toast.success("Suggestions loaded!");
+      } else {
+        toast.info("No suggestions found for the selected filters.");
+      }
     } catch (err) {
       console.error("Error fetching suggestions:", err);
+      toast.error("Something went wrong while fetching suggestions.");
+    } finally {
+      setLoading(false); // hide loading text or spinner
     }
   };
-  
   
 
   const handleClear = () => {
@@ -52,7 +65,9 @@ const PastSuggestions: React.FC = () => {
         border: "1px solid #eaeaea",
       }}
     >
-      <h2 style={{ marginBottom: "1rem", color: "#444" }}>🗂️ Past Suggestions</h2>
+      <h2 style={{ marginBottom: "1rem", color: "#444" }}>
+        🗂️ Past Suggestions
+      </h2>
 
       <div
         style={{
@@ -90,8 +105,14 @@ const PastSuggestions: React.FC = () => {
         <button onClick={fetchSuggestions}>Search</button>
       </div>
 
+      {loading && (
+        <p style={{ fontStyle: "italic", color: "#888", marginBottom: "1rem" }}>
+          Loading suggestions...
+        </p>
+      )}
+
       {/* Fallback Messages */}
-      {!mood && !date && data.length === 0 ? (
+      {/* {!mood && !date && data.length === 0 ? (
         <p style={{ fontStyle: "italic", color: "#888" }}>
           Use the filters above to view past suggestions.
         </p>
@@ -99,7 +120,7 @@ const PastSuggestions: React.FC = () => {
         <p style={{ fontStyle: "italic", color: "#888" }}>
           No suggestions found for the selected filters.
         </p>
-      ) : (
+      ) : ( */}
         <div style={{ display: "grid", gap: "1rem" }}>
           {data.map((item) => (
             <div
@@ -134,7 +155,7 @@ const PastSuggestions: React.FC = () => {
             </div>
           ))}
         </div>
-      )}
+      {/* )} */}
     </div>
   );
 };
