@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+*.db
+*.pkl
+
+# Node
+node_modules/
+dist/
+.env
+.vite/
+
+# OS
+.DS_Store
+
+# Virtual env
+venv/
+.env/
+
+# Compiled artifacts
+*.pyc
+*.pyo
