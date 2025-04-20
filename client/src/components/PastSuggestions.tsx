@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 type Suggestion = {
@@ -16,16 +16,13 @@ const PastSuggestions: React.FC = () => {
   const [date, setDate] = useState("");
 
   const fetchSuggestions = async () => {
+    if (!mood && !date) return;
+  
     try {
       const params: any = {};
       if (mood) params.mood = mood;
-      if (date === "today") {
-        const localDate = new Date().toLocaleDateString("en-CA");
-        params.date = localDate;
-      } else if (date) {
-        params.date = date;
-      }
-
+      if (date) params.date = date;
+  
       const res = await axios.get<{ results: Suggestion[] }>(
         "http://localhost:8000/suggestions",
         { params }
@@ -35,10 +32,14 @@ const PastSuggestions: React.FC = () => {
       console.error("Error fetching suggestions:", err);
     }
   };
+  
+  
 
-  useEffect(() => {
-    fetchSuggestions();
-  }, [mood, date]);
+  const handleClear = () => {
+    setMood("");
+    setDate("");
+    setData([]);
+  };
 
   return (
     <div
@@ -85,16 +86,14 @@ const PastSuggestions: React.FC = () => {
             flex: "1 1 150px",
           }}
         />
-
-        <button onClick={() => setDate("today")}>Today</button>
-        <button onClick={() => { setMood(""); setDate(""); }}>Clear</button>
+        <button onClick={handleClear}>Clear</button>
+        <button onClick={fetchSuggestions}>Search</button>
       </div>
 
-      {date && !data.length ? (
+      {/* Fallback Messages */}
+      {!mood && !date && data.length === 0 ? (
         <p style={{ fontStyle: "italic", color: "#888" }}>
-          {date === "today"
-            ? "No suggestions found for today. Try adjusting the filters!"
-            : `No suggestions found for ${date}.`}
+          Use the filters above to view past suggestions.
         </p>
       ) : !data.length ? (
         <p style={{ fontStyle: "italic", color: "#888" }}>
@@ -114,7 +113,11 @@ const PastSuggestions: React.FC = () => {
               }}
             >
               <div
-                style={{ fontWeight: "bold", marginBottom: "0.25rem", color: "#333" }}
+                style={{
+                  fontWeight: "bold",
+                  marginBottom: "0.25rem",
+                  color: "#333",
+                }}
               >
                 {item.mood} • Energy: {item.energy} • Time: {item.time} min
               </div>
