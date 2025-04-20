@@ -11,6 +11,7 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
   const [energy, setEnergy] = useState(5);
   const [time, setTime] = useState(30);
   const [journal, setJournal] = useState('');
+  const [loading, setLoading] = useState(false);
 
   type SuggestionResponse = {
     suggestions: string[];
@@ -18,6 +19,7 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await axios.post<SuggestionResponse>('http://localhost:8000/suggest', {
         mood,
@@ -28,6 +30,8 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
       onSuggestionsReceived(res.data.suggestions);
     } catch (error) {
       console.error('Error fetching suggestions:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,6 +124,8 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
         <button
           type="submit"
           className="btn"
+          disabled={loading}
+          style={{ opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}
           // style={{
           //   padding: "0.75rem",
           //   borderRadius: "8px",
@@ -131,7 +137,7 @@ const InputForm: React.FC<Props> = ({ onSuggestionsReceived, theme }) => {
           //   transition: "background 0.3s ease",
           // }}
         >
-          Get Suggestions
+          {loading ? "Generating..." : "Get Suggestions"}
         </button>
       </div>
     </form>

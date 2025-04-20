@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -36,6 +39,19 @@ def log_request(mood: str, energy: int, time: int, suggestions: list[str], journ
             log.write(f"→ {s}\n")
 
 
+# @app.post("/suggest")
+# def suggest_activity(req: SuggestRequest):
+#     if req.journal.strip():
+#         suggestions = get_suggestions_from_journal(req.journal, req.mood, req.energy, req.time)
+#     else:
+#         suggestions = get_suggestions(req.mood, req.energy, req.time)
+
+#     log_request(req.mood, req.energy, req.time, suggestions, req.journal)
+#     insert_log_to_db(req.mood, req.energy, req.time, suggestions, req.journal)
+#     return {"suggestions": suggestions}
+
+from utils.suggestions import get_suggestions, get_suggestions_from_journal
+
 @app.post("/suggest")
 def suggest_activity(req: SuggestRequest):
     if req.journal.strip():
@@ -46,6 +62,7 @@ def suggest_activity(req: SuggestRequest):
     log_request(req.mood, req.energy, req.time, suggestions, req.journal)
     insert_log_to_db(req.mood, req.energy, req.time, suggestions, req.journal)
     return {"suggestions": suggestions}
+
 
 from fastapi import Query
 from fastapi.responses import JSONResponse

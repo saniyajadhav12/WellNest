@@ -166,3 +166,16 @@
 → You seem tired — try a 10-minute nap or calming music.
 → Use 20 minutes to reflect and recharge.
 → Your energy level is 1/10 — listen to your body.
+
+[2025-04-20 11:53:11.279650] Mood: happy, Energy: 2, Time: 10 mins
+📝 Journal: I am feeling happy
+→ Channel that joy! Dance, walk, or share it with someone.
+→ Use 10 minutes to reflect and recharge.
+→ Your energy level is 2/10 — listen to your body.
+
+[2025-04-20 12:51:34.230599] Mood: happy, Energy: 3, Time: 30 mins
+→ Take a 30-minute mindful walk.
+→ Do a 10-minute breathing exercise to stay grounded.
+→ Your energy is at 3/10 — consider journaling or stretching.
+→ Spread the positivity — message a friend or write a compliment.
+→ Celebrate with music or a quick dance!
