@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type User = {
@@ -6,6 +7,10 @@ type User = {
     email: string;
     created_at: string;
 };
+
+interface DecodedToken {
+  exp: number; // UNIX timestamp
+}
 
 interface AuthContextType {
     user: User | null;
@@ -20,13 +25,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
 
+  const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    setToken(null);
+  };
+
+  const checkTokenValidity = (token: string): boolean => {
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      const isExpired = decoded.exp * 1000 < Date.now();
+      return !isExpired;
+    } catch (err) {
+      return false;
+    }
+  };
+
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
 
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      if (checkTokenValidity(storedToken)) {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } else {
+        logout(); // auto-logout if token expired
+      }
     }
   }, []);
 
@@ -37,12 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(newToken);
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setUser(null);
-    setToken(null);
-  };
+  
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout }}>
