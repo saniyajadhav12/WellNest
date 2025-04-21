@@ -22,8 +22,12 @@ const MoodBreakdownChart: React.FC<Props> = ({ chartType, date }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem("token");
       try {
         const res = await axios.get<{ results: MoodData[] }>('http://localhost:8000/mood-summary', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           params: { date },
         });
         setData(res.data.results);

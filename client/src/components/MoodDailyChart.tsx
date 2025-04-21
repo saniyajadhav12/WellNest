@@ -22,7 +22,12 @@ const MoodDailyChart: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get<{ results: DailyMood[] }>('http://localhost:8000/mood-daily-summary');
+      const token = localStorage.getItem("token");
+      const res = await axios.get<{ results: DailyMood[] }>('http://localhost:8000/mood-daily-summary', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const raw = res.data.results;
 
       // Transform into stacked format

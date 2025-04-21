@@ -25,11 +25,15 @@ const PastSuggestions: React.FC<{ theme: "light" | "dark" }> = ({ theme }) => {
     if (!mood && !date) return;
 
     setLoading(true);
+    const token = localStorage.getItem("token");
 
     try {
       const res = await axios.get<{ results: Suggestion[] }>(
         "http://localhost:8000/suggestions",
         {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
           params: {
             ...(mood && { mood }),
             ...(date && { date }),

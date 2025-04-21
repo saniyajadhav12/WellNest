@@ -69,13 +69,16 @@ from fastapi.responses import JSONResponse
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from datetime import datetime
+from fastapi import Depends
+from auth import get_current_user
 
 @app.get("/suggestions")
 def get_suggestions_from_db(
     mood: str = Query(None),
     date: str = Query(None),
     limit: int = Query(5),     # default 5 suggestions per page
-    offset: int = Query(0)     # skip how many records
+    offset: int = Query(0),     # skip how many records
+    current_user: dict = Depends(get_current_user)  # 🛡️ Token required
 ):
     try:
         conn = psycopg2.connect(**DB_CONFIG)
@@ -122,7 +125,7 @@ from collections import Counter
 from fastapi.responses import JSONResponse
 
 @app.get("/mood-summary")
-def get_mood_summary(mood: str = None, date: str = None):
+def get_mood_summary(mood: str = None, date: str = None, current_user: dict = Depends(get_current_user)):
     try:
         conn = psycopg2.connect(**DB_CONFIG)
         cur = conn.cursor()
@@ -156,7 +159,7 @@ def get_mood_summary(mood: str = None, date: str = None):
 from fastapi.responses import JSONResponse
 
 @app.get("/mood-daily-summary")
-def get_mood_daily_summary():
+def get_mood_daily_summary(current_user: dict = Depends(get_current_user)):
     try:
         conn = psycopg2.connect(**DB_CONFIG)
         cur = conn.cursor()
