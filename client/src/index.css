@@ -129,3 +129,7 @@ body.dark li {
 .fade-in {
   animation: fadeInUp 0.4s ease-out;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* 👈 this turns the icon white */
+}

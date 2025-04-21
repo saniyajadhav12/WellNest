@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useTheme } from "../context/ThemeContext";
 
 const Register: React.FC = () => {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,16 +38,39 @@ const Register: React.FC = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "80vh",
-        backgroundColor: "#f9f9ff",
+        minHeight: "100vh",
+        backgroundColor: theme === "dark" ? "#111" : "#f9f9ff",
+        color: theme === "dark" ? "#f1f1f1" : "#111",
+        transition: "background 0.3s ease",
       }}
     >
+      {/* Dark Mode Toggle Button */}
+      <button
+        onClick={toggleTheme}
+        style={{
+          position: "absolute",
+          top: "1rem",
+          right: "1rem",
+          padding: "0.5rem 1rem",
+          borderRadius: "8px",
+          border: "1px solid #ccc",
+          backgroundColor: theme === "dark" ? "#222" : "#f5f5f5",
+          color: theme === "dark" ? "#f1f1f1" : "#333",
+          cursor: "pointer",
+        }}
+      >
+        {theme === "dark" ? "🌞 Light Mode" : "🌙 Dark Mode"}
+      </button>
       <div
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: theme === "dark" ? "#1e1e1e" : "#fff",
+          color: theme === "dark" ? "#f1f1f1" : "#111",
           padding: "2rem",
           borderRadius: "16px",
-          boxShadow: "0 0 10px rgba(0, 0, 0, 0.05)",
+          boxShadow:
+            theme === "dark"
+              ? "0 0 10px rgba(255, 255, 255, 0.05)"
+              : "0 0 10px rgba(0, 0, 0, 0.05)",
           width: "100%",
           maxWidth: "600px",
         }}
@@ -53,7 +78,7 @@ const Register: React.FC = () => {
         <h2 style={{ textAlign: "center", marginBottom: "1.5rem", color: "#5e4b8b" }}>
           Register
         </h2>
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem",backgroundColor: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#f1f1f1" : "#111", }}>
           <input
             type="text"
             name="username"
@@ -81,7 +106,7 @@ const Register: React.FC = () => {
           />
           <button
             type="submit"
-            className="btn"
+            // className="btn"
             disabled={loading}
             style={{
               backgroundColor: "#b494e3",

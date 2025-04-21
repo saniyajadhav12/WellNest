@@ -98,7 +98,8 @@ const Home: React.FC = () => {
         >
           <div
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: theme === "dark" ? "#1e1e1e" : "#fff",
+              color: theme === "dark" ? "#f1f1f1" : "#111",
               padding: "2rem",
               borderRadius: "12px",
               textAlign: "center",
@@ -159,7 +160,8 @@ const Home: React.FC = () => {
         >
           <div
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: theme === "dark" ? "#1e1e1e" : "#fff",
+              color: theme === "dark" ? "#f1f1f1" : "#111",
               padding: "2rem",
               borderRadius: "12px",
               textAlign: "center",
