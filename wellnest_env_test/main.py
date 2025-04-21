@@ -235,7 +235,7 @@ def login(user: UserLogin):
         conn = psycopg2.connect(**DB_CONFIG)
         cur = conn.cursor()
 
-        cur.execute("SELECT id, username, password_hash FROM users WHERE email = %s", (user.email,))
+        cur.execute("SELECT id, username, password_hash, created_at FROM users WHERE email = %s", (user.email,))
         db_user = cur.fetchone()
         cur.close()
         conn.close()
@@ -243,7 +243,7 @@ def login(user: UserLogin):
         if not db_user:
             raise HTTPException(status_code=401, detail="Invalid email or password")
 
-        user_id, username, password_hash = db_user
+        user_id, username, password_hash, created_at = db_user
 
         if not verify_password(user.password, password_hash):
             raise HTTPException(status_code=401, detail="Invalid email or password")
@@ -256,7 +256,8 @@ def login(user: UserLogin):
             "user": {
                 "id": user_id,
                 "username": username,
-                "email": user.email
+                "email": user.email,
+                "created_at": created_at.isoformat() if created_at else None
             }
         }
 

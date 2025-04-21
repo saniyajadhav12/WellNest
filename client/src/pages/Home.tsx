@@ -16,6 +16,7 @@ const Home: React.FC = () => {
   const [chartType, setChartType] = useState<"pie" | "bar">("pie");
   const [showChart, setShowChart] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
+  const [showAccount, setShowAccount] = useState(false);
 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -38,7 +39,14 @@ const Home: React.FC = () => {
       }}
     >
       {/* Dark Mode Toggle */}
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem", marginBottom: "1rem" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "1rem",
+          marginBottom: "1rem",
+        }}
+      >
         <button
           onClick={toggleTheme}
           style={{
@@ -54,19 +62,21 @@ const Home: React.FC = () => {
         </button>
 
         {user && (
-          <button
-            onClick={handleLogout}
-            style={{
-              padding: "0.5rem 1rem",
-              borderRadius: "8px",
-              border: "1px solid #ccc",
-              backgroundColor: "#e57373", // Softer red
-              color: "#fff",
-              cursor: "pointer",
-            }}
-          >
-            Logout
-          </button>
+          <>
+            <button
+              onClick={() => setShowAccount(true)}
+              style={{
+                padding: "0.5rem 1rem",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+                backgroundColor: "#90caf9", // Softer red
+                color: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              👤 My Account
+            </button>
+          </>
         )}
       </div>
 
@@ -83,7 +93,7 @@ const Home: React.FC = () => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            zIndex: 9999,
+            zIndex: 10000,
           }}
         >
           <div
@@ -96,7 +106,14 @@ const Home: React.FC = () => {
             }}
           >
             <p>Are you sure you want to log out?</p>
-            <div style={{ marginTop: "1rem", display: "flex", gap: "1rem", justifyContent: "center" }}>
+            <div
+              style={{
+                marginTop: "1rem",
+                display: "flex",
+                gap: "1rem",
+                justifyContent: "center",
+              }}
+            >
               <button
                 onClick={confirmLogout}
                 style={{
@@ -125,12 +142,90 @@ const Home: React.FC = () => {
         </div>
       )}
 
+      {showAccount && user && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.4)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#fff",
+              padding: "2rem",
+              borderRadius: "12px",
+              textAlign: "center",
+              maxWidth: "360px",
+            }}
+          >
+            <h3>👤 My Account</h3>
+            <p>
+              <strong>Username:</strong> {user.username}
+            </p>
+            <p>
+              <strong>Email:</strong> {user.email}
+            </p>
+            <p>
+              <strong>Created at:</strong>{" "}
+              {user.created_at ? new Date(user.created_at).toDateString() : "N/A"}
+            </p>
+
+            <div
+              style={{
+                marginTop: "1.5rem",
+                display: "flex",
+                gap: "1rem",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                onClick={handleLogout}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#d32f2f",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                }}
+              >
+                Logout
+              </button>
+              <button
+                onClick={() => setShowAccount(false)}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#ccc",
+                  border: "none",
+                  borderRadius: "6px",
+                }}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <h1 style={{ textAlign: "center", marginBottom: "1.5rem" }}>
         WellNest - Self-Care Scheduler
       </h1>
 
       {user && (
-        <p style={{ textAlign: "center", marginBottom: "1rem", fontStyle: "italic" }}>
+        <p
+          style={{
+            textAlign: "center",
+            marginBottom: "1rem",
+            fontStyle: "italic",
+          }}
+        >
           Hello, {user.username} 👋
         </p>
       )}
@@ -151,9 +246,18 @@ const Home: React.FC = () => {
           border: `1px solid ${theme === "dark" ? "#333" : "#ddd"}`,
         }}
       >
-        <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>📊 Choose a Chart View</h2>
+        <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>
+          📊 Choose a Chart View
+        </h2>
 
-        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
           <label>
             <input
               type="radio"
@@ -191,7 +295,11 @@ const Home: React.FC = () => {
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              style={{ padding: "0.5rem", borderRadius: "8px", border: "1px solid #ccc" }}
+              style={{
+                padding: "0.5rem",
+                borderRadius: "8px",
+                border: "1px solid #ccc",
+              }}
             />
             <div style={{ marginTop: "1rem" }}>
               <button className="btn" onClick={() => setShowChart(true)}>
@@ -205,7 +313,10 @@ const Home: React.FC = () => {
       {/* Chart Display */}
       {selectedView === "summary" && <MoodDailyChart />}
       {selectedView !== "summary" && showChart && (
-        <MoodBreakdownChart chartType={selectedView as "pie" | "bar"} date={selectedDate} />
+        <MoodBreakdownChart
+          chartType={selectedView as "pie" | "bar"}
+          date={selectedDate}
+        />
       )}
     </div>
   );
