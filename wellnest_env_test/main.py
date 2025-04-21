@@ -225,3 +225,40 @@ def register_user(user: UserCreate):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+from auth import verify_password, create_access_token
+from schemas import UserLogin
+
+@app.post("/login")
+def login(user: UserLogin):
+    try:
+        conn = psycopg2.connect(**DB_CONFIG)
+        cur = conn.cursor()
+
+        cur.execute("SELECT id, username, password_hash FROM users WHERE email = %s", (user.email,))
+        db_user = cur.fetchone()
+        cur.close()
+        conn.close()
+
+        if not db_user:
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+
+        user_id, username, password_hash = db_user
+
+        if not verify_password(user.password, password_hash):
+            raise HTTPException(status_code=401, detail="Invalid email or password")
+
+        token = create_access_token({"sub": str(user_id)})
+
+        return {
+            "access_token": token,
+            "token_type": "bearer",
+            "user": {
+                "id": user_id,
+                "username": username,
+                "email": user.email
+            }
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

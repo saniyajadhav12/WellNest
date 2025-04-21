@@ -22,3 +22,8 @@ class UserInDB(BaseModel):
     id: int
     email: EmailStr
     created_at: datetime
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+

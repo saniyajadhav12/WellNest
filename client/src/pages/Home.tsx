@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import InputForm from "../components/InputForm";
 import Suggestions from "../components/Suggestions";
 import PastSuggestions from "../components/PastSuggestions";
 import MoodBreakdownChart from "../components/MoodBreakdownChart";
 import MoodDailyChart from "../components/MoodDailyChart";
 import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -13,6 +15,17 @@ const Home: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [chartType, setChartType] = useState<"pie" | "bar">("pie");
   const [showChart, setShowChart] = useState(false);
+  const [showConfirmLogout, setShowConfirmLogout] = useState(false);
+
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => setShowConfirmLogout(true);
+  const confirmLogout = () => {
+    logout();
+    navigate("/login");
+  };
+  const cancelLogout = () => setShowConfirmLogout(false);
 
   return (
     <div
@@ -25,7 +38,7 @@ const Home: React.FC = () => {
       }}
     >
       {/* Dark Mode Toggle */}
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: "1rem", marginBottom: "1rem" }}>
         <button
           onClick={toggleTheme}
           style={{
@@ -39,11 +52,88 @@ const Home: React.FC = () => {
         >
           {theme === "dark" ? "🌞 Light Mode" : "🌙 Dark Mode"}
         </button>
+
+        {user && (
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: "0.5rem 1rem",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+              backgroundColor: "#e57373", // Softer red
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            Logout
+          </button>
+        )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmLogout && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.4)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "#fff",
+              padding: "2rem",
+              borderRadius: "12px",
+              textAlign: "center",
+              maxWidth: "320px",
+            }}
+          >
+            <p>Are you sure you want to log out?</p>
+            <div style={{ marginTop: "1rem", display: "flex", gap: "1rem", justifyContent: "center" }}>
+              <button
+                onClick={confirmLogout}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#d32f2f",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "6px",
+                }}
+              >
+                Yes, Logout
+              </button>
+              <button
+                onClick={cancelLogout}
+                style={{
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#ccc",
+                  border: "none",
+                  borderRadius: "6px",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <h1 style={{ textAlign: "center", marginBottom: "1.5rem" }}>
         WellNest - Self-Care Scheduler
       </h1>
+
+      {user && (
+        <p style={{ textAlign: "center", marginBottom: "1rem", fontStyle: "italic" }}>
+          Hello, {user.username} 👋
+        </p>
+      )}
 
       <InputForm onSuggestionsReceived={setSuggestions} theme={theme} />
       <Suggestions suggestions={suggestions} theme={theme} />
