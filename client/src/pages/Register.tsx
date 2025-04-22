@@ -78,7 +78,7 @@ const Register: React.FC = () => {
         <h2 style={{ textAlign: "center", marginBottom: "1.5rem", color: "#5e4b8b" }}>
           Register
         </h2>
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem",backgroundColor: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#f1f1f1" : "#111", }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem",backgroundColor: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#f1f1f1" : "#111", alignItems: "center"}}>
           <input
             type="text"
             name="username"
@@ -117,6 +117,8 @@ const Register: React.FC = () => {
               cursor: "pointer",
               fontWeight: 600,
               opacity: loading ? 0.6 : 1,
+              // height: "40px"
+              width: "200px"
             }}
           >
             {loading ? "Registering..." : "Register"}

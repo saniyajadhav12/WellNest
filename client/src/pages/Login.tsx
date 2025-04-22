@@ -103,7 +103,7 @@ const Login: React.FC = () => {
         <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>Login</h2>
         <form
           onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "1rem",backgroundColor: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#f1f1f1" : "#111", }}
+          style={{ display: "flex", flexDirection: "column", gap: "1rem",backgroundColor: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#f1f1f1" : "#111", alignItems: "center"}}
         >
           <input
             type="email"
@@ -132,16 +132,18 @@ const Login: React.FC = () => {
           <button 
             type="submit" 
             style={{
-              padding: "0.75rem 1rem",
+              padding: "0.6rem",
               borderRadius: "8px",
               border: "none",
               backgroundColor: "#c4a6f5", // 💜 lavender
               color: "#fff",
               fontWeight: "bold",
-              fontSize: "1rem",
+              // fontSize: "1rem",
               cursor: "pointer",
               opacity: loading ? 0.6 : 1,
-              transition: "background 0.3s ease",
+              // transition: "background 0.3s ease",
+              width: "200px",
+              // height: "40px"
             }} 
             disabled={loading}>
             {loading ? "Logging in..." : "Login"}
