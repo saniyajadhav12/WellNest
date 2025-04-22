@@ -5,10 +5,11 @@ import { useTheme } from "../context/ThemeContext";
 import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ displayName: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const [usernameFocused, setUsernameFocused] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -17,16 +18,21 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.username || !form.email || !form.password) {
+    if (!form.displayName || !form.email || !form.password) {
       toast.error("Please fill out all fields");
       return;
     }
 
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:8000/register", form);
+      const res = await axios.post("http://localhost:8000/register", {
+        username: form.displayName, // still sent as "username" in payload
+        email: form.email,
+        password: form.password,
+      });
+
       toast.success("Registration successful!");
-      console.log(res.data); // optional
+      console.log(res.data);
     } catch (err: any) {
       toast.error(err.response?.data?.detail || "Registration failed");
     } finally {
@@ -88,6 +94,7 @@ const Register: React.FC = () => {
         </h2>
         <form
           onSubmit={handleSubmit}
+          autoComplete="off"
           style={{
             display: "flex",
             flexDirection: "column",
@@ -97,19 +104,39 @@ const Register: React.FC = () => {
             alignItems: "center",
           }}
         >
+
+          {/* Double hidden dummy fields to mislead autofill */}
+          <input type="text" name="fakeuser" autoComplete="username" style={{ display: "none" }} />
+          <input type="password" name="fakepass" autoComplete="new-password" style={{ display: "none" }} />
+
           <input
             type="text"
-            name="username"
+            name="display_name"
+            inputMode="text"
             placeholder="Username"
-            value={form.username}
+            value={form.displayName}
             onChange={handleChange}
+            onFocus={() => setUsernameFocused(true)}
+            onBlur={() => setUsernameFocused(false)}
             autoFocus
+            autoComplete="new-username"
+            autoCorrect="off"
+            spellCheck={false}
             style={{
               padding: "0.5rem",
               borderRadius: "8px",
               border: "1px solid #ccc",
             }}
           />
+          {usernameFocused && (<p style={{
+            fontSize: "0.8rem",
+            color: theme === "dark" ? "#aaa" : "#666",
+            marginTop: "-0.5rem",
+            marginBottom: "0.5rem"
+          }}>
+            Your username will be used to personalize your experience and shown in your account.
+          </p>)}
+
           <input
             type="email"
             name="email"
