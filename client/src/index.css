@@ -133,3 +133,16 @@ body.dark li {
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1); /* 👈 this turns the icon white */
 }
+
+/* Autofill fix for dark mode */
+body.dark input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #1a1a1a inset !important;
+  -webkit-text-fill-color: #f1f1f1 !important;
+}
+
+/* Autofill fix for light mode */
+body.light input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-text-fill-color: #111 !important;
+}
+
