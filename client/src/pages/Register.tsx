@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 import { useTheme } from "../context/ThemeContext";
+import { useNavigate } from "react-router-dom";
 
 const Register: React.FC = () => {
-  const [form, setForm] = useState({ username: '', email: '', password: '' });
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -75,10 +77,26 @@ const Register: React.FC = () => {
           maxWidth: "600px",
         }}
       >
-        <h2 style={{ textAlign: "center", marginBottom: "1.5rem", color: "#5e4b8b" }}>
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "1.5rem",
+            color: "#5e4b8b",
+          }}
+        >
           Register
         </h2>
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem",backgroundColor: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#f1f1f1" : "#111", alignItems: "center"}}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            backgroundColor: theme === "dark" ? "#222" : "#fff",
+            color: theme === "dark" ? "#f1f1f1" : "#111",
+            alignItems: "center",
+          }}
+        >
           <input
             type="text"
             name="username"
@@ -86,7 +104,11 @@ const Register: React.FC = () => {
             value={form.username}
             onChange={handleChange}
             autoFocus
-            style={{ padding: "0.5rem", borderRadius: "8px", border: "1px solid #ccc" }}
+            style={{
+              padding: "0.5rem",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+            }}
           />
           <input
             type="email"
@@ -94,7 +116,11 @@ const Register: React.FC = () => {
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
-            style={{ padding: "0.5rem", borderRadius: "8px", border: "1px solid #ccc" }}
+            style={{
+              padding: "0.5rem",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+            }}
           />
           <input
             type="password"
@@ -102,7 +128,11 @@ const Register: React.FC = () => {
             placeholder="Password"
             value={form.password}
             onChange={handleChange}
-            style={{ padding: "0.5rem", borderRadius: "8px", border: "1px solid #ccc" }}
+            style={{
+              padding: "0.5rem",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+            }}
           />
           <button
             type="submit"
@@ -118,11 +148,31 @@ const Register: React.FC = () => {
               fontWeight: 600,
               opacity: loading ? 0.6 : 1,
               // height: "40px"
-              width: "200px"
+              width: "200px",
             }}
           >
             {loading ? "Registering..." : "Register"}
           </button>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              marginTop: "1rem",
+              color: theme === "dark" ? "#aaa" : "#555",
+            }}
+          >
+            Already have an account?{" "}
+            <span
+              onClick={() => navigate("/login")}
+              style={{
+                color: "#b494e3",
+                textDecoration: "underline",
+                cursor: "pointer",
+                fontWeight: 500,
+              }}
+            >
+              Sign In
+            </span>
+          </p>
         </form>
       </div>
     </div>

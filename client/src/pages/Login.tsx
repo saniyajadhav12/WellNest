@@ -41,10 +41,9 @@ const Login: React.FC = () => {
         form
       );
 
-    //   localStorage.setItem("token", res.data.access_token);
-    //   localStorage.setItem("username", res.data.user.username); // or decode from token
-      
-      
+      //   localStorage.setItem("token", res.data.access_token);
+      //   localStorage.setItem("username", res.data.user.username); // or decode from token
+
       login(res.data.user, res.data.access_token);
       toast.success("Login successful!");
       navigate("/");
@@ -103,7 +102,14 @@ const Login: React.FC = () => {
         <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>Login</h2>
         <form
           onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "1rem",backgroundColor: theme === "dark" ? "#222" : "#fff", color: theme === "dark" ? "#f1f1f1" : "#111", alignItems: "center"}}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            backgroundColor: theme === "dark" ? "#222" : "#fff",
+            color: theme === "dark" ? "#f1f1f1" : "#111",
+            alignItems: "center",
+          }}
         >
           <input
             type="email"
@@ -129,8 +135,8 @@ const Login: React.FC = () => {
               border: "1px solid #ccc",
             }}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             style={{
               padding: "0.6rem",
               borderRadius: "8px",
@@ -144,10 +150,31 @@ const Login: React.FC = () => {
               // transition: "background 0.3s ease",
               width: "200px",
               // height: "40px"
-            }} 
-            disabled={loading}>
+            }}
+            disabled={loading}
+          >
             {loading ? "Logging in..." : "Login"}
           </button>
+          <p
+            style={{
+              fontSize: "0.9rem",
+              marginTop: "1rem",
+              color: theme === "dark" ? "#aaa" : "#555",
+            }}
+          >
+            Don’t have an account?{" "}
+            <span
+              onClick={() => navigate("/register")}
+              style={{
+                color: "#c4a6f5",
+                textDecoration: "underline",
+                cursor: "pointer",
+                fontWeight: 500,
+              }}
+            >
+              Sign up
+            </span>
+          </p>
         </form>
       </div>
     </div>
