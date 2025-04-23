@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface Props {
   suggestions: string[];
   theme: "light" | "dark";
-  displayStyle: "minimal" | "detailed" | "playful";
 }
 
-const Suggestions: React.FC<Props> = ({ suggestions, theme, displayStyle }) => {
+const Suggestions: React.FC<Props> = ({ suggestions, theme }) => {
+  const [displayStyle, setDisplayStyle] = useState<"minimal" | "detailed" | "playful">("minimal");
+  const [showSelector, setShowSelector] = useState(false);
+
   if (suggestions.length === 0) return null;
 
   const containerStyle = {
@@ -82,11 +84,72 @@ const Suggestions: React.FC<Props> = ({ suggestions, theme, displayStyle }) => {
 
   return (
     <div style={containerStyle}>
-      <h2 style={{ marginBottom: '1rem', textAlign: 'center', fontSize: '1.4rem' }}>
-        {displayStyle === "minimal" && "🌿 Wellness Suggestions"}
-        {displayStyle === "detailed" && "📋 Personalized Recommendations"}
-        {displayStyle === "playful" && "🎉 Fun Self-Care Ideas"}
-      </h2>
+      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+        <h2 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>
+          {displayStyle === "minimal" && "🌿 Wellness Suggestions"}
+          {displayStyle === "detailed" && "📋 Personalized Recommendations"}
+          {displayStyle === "playful" && "🎉 Fun Self-Care Ideas"}
+        </h2>
+
+        <button
+          onClick={() => setShowSelector(!showSelector)}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: '#b494e3',
+            cursor: 'pointer',
+            fontSize: '0.9rem',
+            textDecoration: 'underline'
+          }}
+        >
+          {showSelector ? 'Hide View Options' : '⚙️ Customize View'}
+        </button>
+
+        {showSelector && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "0.75rem",
+              marginTop: "0.75rem",
+              flexWrap: 'wrap',
+            }}
+          >
+            {(["minimal", "detailed", "playful"] as const).map((option) => {
+              const isSelected = displayStyle === option;
+              return (
+                <label
+                  key={option}
+                  style={{
+                    padding: "0.4rem 1rem",
+                    borderRadius: "20px",
+                    border: `2px solid ${isSelected ? "#b494e3" : "#ccc"}`,
+                    backgroundColor: isSelected ? "#f5eaff" : "#fff",
+                    color: isSelected ? "#5e4b8b" : "#333",
+                    fontWeight: isSelected ? 600 : 500,
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    boxShadow: isSelected
+                      ? "0 2px 8px rgba(180, 148, 227, 0.25)"
+                      : "none",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="viewStyle"
+                    value={option}
+                    checked={displayStyle === option}
+                    onChange={() => setDisplayStyle(option)}
+                    style={{ display: "none" }}
+                  />
+                  {option.charAt(0).toUpperCase() + option.slice(1)}
+                </label>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       {displayStyle === "minimal" && renderMinimal()}
       {displayStyle === "detailed" && renderDetailed()}
       {displayStyle === "playful" && renderPlayful()}
