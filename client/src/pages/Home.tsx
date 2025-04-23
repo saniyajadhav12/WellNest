@@ -17,6 +17,9 @@ const Home: React.FC = () => {
   const [showChart, setShowChart] = useState(false);
   const [showConfirmLogout, setShowConfirmLogout] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
+  const [displayStyle, setDisplayStyle] = useState<
+    "minimal" | "detailed" | "playful"
+  >("minimal");
 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -177,7 +180,9 @@ const Home: React.FC = () => {
             </p>
             <p>
               <strong>Created at:</strong>{" "}
-              {user.created_at ? new Date(user.created_at).toDateString() : "N/A"}
+              {user.created_at
+                ? new Date(user.created_at).toDateString()
+                : "N/A"}
             </p>
 
             <div
@@ -232,8 +237,72 @@ const Home: React.FC = () => {
         </p>
       )}
 
+      {/* New Section: Display Style */}
+      <div
+        style={{
+          marginTop: "2rem",
+          textAlign: "center",
+          marginBottom: "2.5rem",
+        }}
+      >
+        <h2
+          style={{
+            fontSize: "1.5rem",
+            marginBottom: "1.5rem",
+            color: "#5e4b8b",
+          }}
+        >
+          🖼️ <strong>Choose Display Style</strong>
+        </h2>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
+          {(["minimal", "detailed", "playful"] as const).map((option) => {
+            const isSelected = displayStyle === option;
+            return (
+              <label
+                key={option}
+                style={{
+                  padding: "0.6rem 1.2rem",
+                  borderRadius: "24px",
+                  border: `2px solid ${isSelected ? "#b494e3" : "#ccc"}`,
+                  backgroundColor: isSelected ? "#f5eaff" : "#fff",
+                  color: isSelected ? "#5e4b8b" : "#333",
+                  fontWeight: isSelected ? 600 : 500,
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  boxShadow: isSelected
+                    ? "0 2px 8px rgba(180, 148, 227, 0.25)"
+                    : "none",
+                }}
+              >
+                <input
+                  type="radio"
+                  name="viewStyle"
+                  value={option}
+                  checked={displayStyle === option}
+                  onChange={() => setDisplayStyle(option)} // ✅ now it knows option is safe
+                  style={{ display: "none" }}
+                />
+                {option.charAt(0).toUpperCase() + option.slice(1)}
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
       <InputForm onSuggestionsReceived={setSuggestions} theme={theme} />
-      <Suggestions suggestions={suggestions} theme={theme} />
+      <Suggestions
+        suggestions={suggestions}
+        theme={theme}
+        displayStyle={displayStyle}
+      />
       <PastSuggestions theme={theme} />
 
       {/* Chart Settings */}

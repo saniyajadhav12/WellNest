@@ -3,9 +3,10 @@ import React from 'react';
 interface Props {
   suggestions: string[];
   theme: "light" | "dark";
+  displayStyle: "minimal" | "detailed" | "playful";
 }
 
-const Suggestions: React.FC<Props> = ({ suggestions, theme }) => {
+const Suggestions: React.FC<Props> = ({ suggestions, theme, displayStyle }) => {
   if (suggestions.length === 0) return null;
 
   const containerStyle = {
@@ -29,21 +30,66 @@ const Suggestions: React.FC<Props> = ({ suggestions, theme }) => {
     display: 'flex',
     alignItems: 'center',
     gap: '0.5rem',
-    boxShadow: theme === 'dark' ? '0 1px 4px rgba(255,255,255,0.05)' : '0 1px 4px rgba(0,0,0,0.05)',
+    boxShadow: theme === 'dark'
+      ? '0 1px 4px rgba(255,255,255,0.05)'
+      : '0 1px 4px rgba(0,0,0,0.05)',
   };
+
+  const playfulStyle = (index: number) => ({
+    ...listItemStyle,
+    backgroundColor: ["#fce4ec", "#e3f2fd", "#e8f5e9", "#fff8e1"][index % 4],
+    color: "#333",
+    fontWeight: 600,
+    fontSize: "1.05rem",
+    borderLeft: `6px solid #b494e3`,
+    animation: "fadeIn 0.3s ease-in-out",
+  });
+
+  const renderMinimal = () => (
+    <ul style={{ listStyle: 'none', padding: 0 }}>
+      {suggestions.map((item, index) => (
+        <li key={index} style={listItemStyle}>
+          🌿 {item}
+        </li>
+      ))}
+    </ul>
+  );
+
+  const renderDetailed = () => (
+    <ul style={{ listStyle: 'none', padding: 0 }}>
+      {suggestions.map((item, index) => (
+        <li key={index} style={listItemStyle}>
+          <div>
+            <div style={{ fontWeight: 'bold' }}>{item}</div>
+            <div style={{ fontSize: '0.85rem', color: theme === 'dark' ? '#bbb' : '#666' }}>
+              Suggested for your current mood • Tap to explore more
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+
+  const renderPlayful = () => (
+    <ul style={{ listStyle: 'none', padding: 0 }}>
+      {suggestions.map((item, index) => (
+        <li key={index} style={playfulStyle(index)}>
+          ✨ {item}
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <div style={containerStyle}>
       <h2 style={{ marginBottom: '1rem', textAlign: 'center', fontSize: '1.4rem' }}>
-        🧘 Wellness Suggestions
+        {displayStyle === "minimal" && "🌿 Wellness Suggestions"}
+        {displayStyle === "detailed" && "📋 Personalized Recommendations"}
+        {displayStyle === "playful" && "🎉 Fun Self-Care Ideas"}
       </h2>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {suggestions.map((item, index) => (
-          <li key={index} style={listItemStyle}>
-            🌿 {item}
-          </li>
-        ))}
-      </ul>
+      {displayStyle === "minimal" && renderMinimal()}
+      {displayStyle === "detailed" && renderDetailed()}
+      {displayStyle === "playful" && renderPlayful()}
     </div>
   );
 };
