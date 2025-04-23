@@ -1,63 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 interface Props {
   suggestions: string[];
   theme: "light" | "dark";
 }
 
-interface Feedback {
-  favorite: boolean;
-}
-
 const Suggestions: React.FC<Props> = ({ suggestions, theme }) => {
   const [displayStyle, setDisplayStyle] = useState<"minimal" | "detailed" | "playful">("minimal");
   const [showSelector, setShowSelector] = useState(false);
-  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  const [feedbacks, setFeedbacks] = useState<Record<number, Feedback>>({});
-
-  useEffect(() => {
-    const saved = localStorage.getItem("favorites");
-    if (saved) {
-      setFeedbacks(JSON.parse(saved));
-    }
-  }, []);
-
-  const showToast = (message: string) => {
-    const toast = document.createElement("div");
-    toast.innerText = message;
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #b494e3;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 500;
-      z-index: 9999;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    `;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
-  };
 
   if (suggestions.length === 0) return null;
-
-  const toggleFavorite = (index: number) => {
-    setFeedbacks((prev) => {
-      const updated = {
-        ...prev,
-        [index]: {
-          ...prev[index],
-          favorite: !prev[index]?.favorite,
-        },
-      };
-      localStorage.setItem("favorites", JSON.stringify(updated));
-      showToast(updated[index].favorite ? "Added to Favorites ✅" : "Removed from Favorites ❌");
-      return updated;
-    });
-  };
 
   const containerStyle = {
     marginTop: '2rem',
@@ -71,9 +23,6 @@ const Suggestions: React.FC<Props> = ({ suggestions, theme }) => {
   };
 
   const cardBase = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     padding: '1rem 1.2rem',
     borderRadius: '12px',
     marginBottom: '1rem',
@@ -83,7 +32,6 @@ const Suggestions: React.FC<Props> = ({ suggestions, theme }) => {
       ? '0 1px 3px rgba(255,255,255,0.06)'
       : '0 2px 6px rgba(0,0,0,0.05)',
   };
-  
 
   const playfulCard = (index: number) => ({
     ...cardBase,
@@ -104,45 +52,14 @@ const Suggestions: React.FC<Props> = ({ suggestions, theme }) => {
           {displayStyle === 'playful' ? '✨' : '🌿'} {item}
         </div>
       </div>
-  
-      <button
-        onClick={() => toggleFavorite(index)}
-        title="Save to favorites"
-        style={{
-          fontSize: '1.3rem',
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          color: feedbacks[index]?.favorite ? '#b494e3' : '#bbb',
-          transition: 'transform 0.2s ease',
-        }}
-      >
-        {feedbacks[index]?.favorite ? '❤️' : '🤍'}
-      </button>
     </li>
   );
-  
-  const filteredSuggestions = showOnlyFavorites
-    ? suggestions.filter((_, index) => feedbacks[index]?.favorite)
-    : suggestions;
 
-  const renderMinimal = () => (
-    <ul style={{ listStyle: 'none', padding: 0 }}>
-      {suggestions.map((item, index) => renderCard(item, index, cardBase))}
-    </ul>
-  );
-
-  const renderDetailed = () => (
+  const renderList = (cardStyleFn: (i: number) => any, subtitle?: string) => (
     <ul style={{ listStyle: 'none', padding: 0 }}>
       {suggestions.map((item, index) =>
-        renderCard(item, index, cardBase, "Suggested for your current mood • Tap to explore more")
+        renderCard(item, index, displayStyle === 'playful' ? cardStyleFn(index) : cardBase, subtitle)
       )}
-    </ul>
-  );
-
-  const renderPlayful = () => (
-    <ul style={{ listStyle: 'none', padding: 0 }}>
-      {filteredSuggestions.map((item, index) => renderCard(item, index, playfulCard(index)))}
     </ul>
   );
 
@@ -212,28 +129,11 @@ const Suggestions: React.FC<Props> = ({ suggestions, theme }) => {
             })}
           </div>
         )}
-
-        {/* Favorites toggle */}
-        <button
-          onClick={() => setShowOnlyFavorites(!showOnlyFavorites)}
-          style={{
-            marginTop: '1.25rem',
-            padding: '0.4rem 1rem',
-            borderRadius: '20px',
-            border: '1px solid #b494e3',
-            backgroundColor: showOnlyFavorites ? '#f5eaff' : '#fff',
-            color: '#5e4b8b',
-            fontWeight: 500,
-            cursor: 'pointer',
-          }}
-        >
-          {showOnlyFavorites ? 'Show All Suggestions' : '⭐ View Favorites Only'}
-        </button>
       </div>
 
-      {displayStyle === "minimal" && renderMinimal()}
-      {displayStyle === "detailed" && renderDetailed()}
-      {displayStyle === "playful" && renderPlayful()}
+      {displayStyle === 'minimal' && renderList(() => cardBase)}
+      {displayStyle === 'detailed' && renderList(() => cardBase, 'Suggested for your current mood • Tap to explore more')}
+      {displayStyle === 'playful' && renderList(playfulCard)}
     </div>
   );
 };
