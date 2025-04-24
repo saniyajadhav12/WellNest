@@ -61,6 +61,7 @@ CREATE TABLE suggestion_logs (
 \q
 
 #### 🚀 Run the FastAPI backend:
+source venv/bin/activate
 python -m uvicorn main:app --reload
 
 🔹 Frontend (React + Vite):
