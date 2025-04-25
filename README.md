@@ -1,6 +1,6 @@
-# 🌿 WellNest – Personalized Self-Care Scheduler
+# 🌿 WellNest – Personalized Self-Care Assistant
 
-WellNest is a full-stack self-care scheduler that suggests personalized wellness activities based on your current **mood**, **energy level**, and **available time**.
+WellNest is a full-stack self-care assistant that suggests personalized wellness activities based on your current **mood**, **energy level**, and **available time**.
 
 - A pastel-themed React frontend
 - A FastAPI backend
