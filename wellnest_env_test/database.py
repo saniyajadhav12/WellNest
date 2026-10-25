@@ -5,12 +5,12 @@ from psycopg2 import sql
 from typing import List
 import os
 
-# You can hardcode for local dev or use environment variables
 DB_CONFIG = {
-    "dbname": "saniyajadhav",
-    "user": "saniyajadhav",
-    "host": "localhost",
-    "port": "5432",
+    "dbname": os.getenv("DB_NAME", "wellnest"),
+    "user": os.getenv("DB_USER", "postgres"),
+    "password": os.getenv("DB_PASSWORD", ""),
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", "5432"),
 }
 
 def insert_log_to_db(mood: str, energy: int, time: int, suggestions: List[str], journal: str = ""):
